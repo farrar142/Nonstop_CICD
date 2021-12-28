@@ -61,11 +61,15 @@ def get_specfic_container(cmd):
             return i
     return []
 def connection_checker(sock,server_address):
-    for i in range(10):
-        time.sleep(1)
-        if sock.connect(server_address):
-            sock.close()
-            return print("success")
+    sock.connect(server_address)
+    recvdata = sock.recv(10000)
+    print(recvdata)
+    # for i in range(10):
+    #     time.sleep(1)
+    #     if recvdata:
+    #         sock.close()
+    #         return print("success")
+    #     sock.close()
 if __name__ == "__main__":
     prev_con = get_specfic_container("web")
     # os.system("docker pull python:3")
