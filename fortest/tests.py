@@ -4,3 +4,5 @@ from django.test import TestCase
 class smokeTest(TestCase):
     def test_bad_maths(self):
         self.assertEqual(2,3)
+
+print("testing")
