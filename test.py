@@ -104,7 +104,12 @@ def get_setting_path():
             if i == 'settings.py':
                 setting_path = path
                 break
-    return setting_path.split("\\")[-1]
+    if osType == "Win":
+        return setting_path.split("\\")[-1]
+    elif osType == "Lin":
+        return setting_path.split("/")[-1]
+    else:
+        raise Exception("Not supported OS")
 
 class Container:
     def __init__(self,con):
@@ -127,21 +132,21 @@ def main():
     con_info = get_specific_container("test_con")
     print(con_info)
     test_con = Container(con_info)
-    # if connection_checker(test_con) == False:
-    #     os.system(f"docker rm -f test_con")
-    #     os.system(f"docker rmi -f python:{cur_time}")
-    #     raise Exception("Connection Error")
-    # else:
-    #     os.system(f"docker rm -f test_con")
-    #     if init == False:
-    #         os.system(f"docker rm -f now_con")
-    #     os.system(f"docker run -d -p 8000:8000 --name now_con python:{cur_time} gunicorn --bind 0:8000 {path}.wsgi")
-    #     if init == False:
-    #         os.system(f"docker rmi -f {now_con.image_name}")
-    #     #messagr success##
-    #     os.system("python3 manage.py test")
-    #     print(" ")
-    #     print("Build Succeed")
+    if connection_checker(test_con) == False:
+        os.system(f"docker rm -f test_con")
+        os.system(f"docker rmi -f python:{cur_time}")
+        raise Exception("Connection Error")
+    else:
+        os.system(f"docker rm -f test_con")
+        if init == False:
+            os.system(f"docker rm -f now_con")
+        os.system(f"docker run -d -p 8000:8000 --name now_con python:{cur_time} gunicorn --bind 0:8000 {path}.wsgi")
+        if init == False:
+            os.system(f"docker rmi -f {now_con.image_name}")
+        #messagr success##
+        os.system("python3 manage.py test")
+        print(" ")
+        print("Build Succeed")
 
 if __name__ == "__main__":
     main()#
