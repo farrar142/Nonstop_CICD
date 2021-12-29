@@ -72,7 +72,7 @@ def connection_checker(test_con):
     sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     sock.settimeout(0.5)
     myip = socket.gethostbyname(socket.gethostname())
-    print(f"{test_con.ip} , {test_con.port}")
+    print(f"ip : {test_con.ip} , port : {test_con.port}")
     server_address = (test_con.ip,int(test_con.port))
     # server_address = (myip,8002)
     for i in range(10):
