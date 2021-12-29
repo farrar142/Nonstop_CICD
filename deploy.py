@@ -5,15 +5,19 @@ import time
 import socket
 from datetime import datetime
 def get_sys():
+    """
+    get_os_name
+    """
     os_encoding = locale.getpreferredencoding()
     if os_encoding.upper() == 'cp949'.upper():
         return "Win"
     elif os_encoding.upper() == 'UTF-8'.upper():
         return "Lin"
 def get_logs(cmd):
-    global osType
+    """
+    get_logs_from_command
+    """
     os_encoding = locale.getpreferredencoding()
-    #print("System Encdoing :: ", os_encoding)
     if os_encoding.upper() == 'cp949'.upper():  # Windows
         return subprocess.Popen(
             cmd, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip()
@@ -23,6 +27,9 @@ def get_logs(cmd):
         print("None matched")
         exit()
 def get_ports_from_strings(_result, words):
+    """
+    parse_ports_from_logs
+    """
     try:
         tcp = words[-2].split("->")
         _tcp = ""
@@ -34,6 +41,9 @@ def get_ports_from_strings(_result, words):
     except:
         return ""        
 def get_docker_containers():
+    """
+    parse_containers_informations
+    """
     cmd = "docker ps -a"
     logs = get_logs(cmd).split("\n")
     column = logs.pop(0)
@@ -63,12 +73,18 @@ def get_docker_containers():
         print("No Containers")
     return result
 def get_specific_container(cmd):
+    """
+    get_specific_container
+    """
     a = get_docker_containers()
     for i in a:
         if i[0] == cmd:
             return i
     return []
 def get_now():
+    """
+    make a string by current time
+    """
     now=datetime.now()
     nows = [now.year,now.month,now.day,now.hour,now.minute,now.second]
     nowtime = ""
@@ -76,6 +92,9 @@ def get_now():
         nowtime = nowtime + str(i).zfill(2)
     return nowtime
 def connection_checker(test_con):
+    """
+    check container's network
+    """
     osType = get_sys()
     print(osType)
     if osType == "Lin":
@@ -103,6 +122,9 @@ def connection_checker(test_con):
     else:
         return True
 def get_setting_path():
+    """
+    find the setting.py's directory
+    """
     setting_path = ""
     for path, dirs, files in os.walk(os.getcwd()):
         for i in files:
@@ -154,7 +176,7 @@ def main():
         if init == False:
             os.system(f"docker rmi -f {now_con.image_name}")
         #messagr success##
-        os.system("python3 manage.py test")
+        os.system("python manage.py test")
         print(" ")
         print("Build Succeed")
 
