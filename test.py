@@ -127,21 +127,21 @@ def main():
     con_info = get_specific_container("test_con")
     print(con_info)
     test_con = Container(con_info)
-    if connection_checker(test_con) == False:
-        os.system(f"docker rm -f test_con")
-        os.system(f"docker rmi -f python:{cur_time}")
-        raise Exception("Connection Error")
-    else:
-        os.system(f"docker rm -f test_con")
-        if init == False:
-            os.system(f"docker rm -f now_con")
-        os.system(f"docker run -d -p 8000:8000 --name now_con python:{cur_time} gunicorn --bind 0:8000 {path}.wsgi")
-        if init == False:
-            os.system(f"docker rmi -f {now_con.image_name}")
-        #messagr success##
-        os.system("python3 manage.py test")
-        print(" ")
-        print("Build Succeed")
+    # if connection_checker(test_con) == False:
+    #     os.system(f"docker rm -f test_con")
+    #     os.system(f"docker rmi -f python:{cur_time}")
+    #     raise Exception("Connection Error")
+    # else:
+    #     os.system(f"docker rm -f test_con")
+    #     if init == False:
+    #         os.system(f"docker rm -f now_con")
+    #     os.system(f"docker run -d -p 8000:8000 --name now_con python:{cur_time} gunicorn --bind 0:8000 {path}.wsgi")
+    #     if init == False:
+    #         os.system(f"docker rmi -f {now_con.image_name}")
+    #     #messagr success##
+    #     os.system("python3 manage.py test")
+    #     print(" ")
+    #     print("Build Succeed")
 
 if __name__ == "__main__":
     main()#
