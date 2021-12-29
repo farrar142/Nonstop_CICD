@@ -176,7 +176,7 @@ def main():
         if init == False:
             os.system(f"docker rmi -f {now_con.image_name}")
         #messagr success##
-        os.system("python manage.py test")
+        os.system("python3 manage.py test")
         print(" ")
         print("Build Succeed")
 
