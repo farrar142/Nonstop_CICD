@@ -85,7 +85,7 @@ def connection_checker(test_con):
         time.sleep(1)
         try:
             sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            sock.settimeout(0.5)
+            sock.settimeout(1)
             sock.connect(server_address)            
             sock.close()
             print(f"{i+1} Connection Succeed")
