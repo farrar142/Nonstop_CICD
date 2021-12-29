@@ -1,5 +1,5 @@
 import os
-for i in range(100):
+for i in range(20):
     print(i)
     f = open("newfile.txt",'w')
     f.write(f"test{str(i)}")
