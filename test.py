@@ -48,7 +48,7 @@ def get_docker_containers():
                 _result.append(get_ports_from_strings(_result, words))
                 # get ip
                 _result.append(get_logs(
-                    "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "+words[0]).strip("'"))
+                    "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "+words[0]).strip("'").strip("\n"))
             except:
                 pass
             result.append(_result)
