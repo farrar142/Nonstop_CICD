@@ -98,7 +98,6 @@ class Container:
 if __name__ == "__main__":
     now = get_now()
     init = False
-    con_info = 
     try:
         now_con = Container(get_specific_container("now_con"))
     except:
