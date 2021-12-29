@@ -119,4 +119,4 @@ if __name__ == "__main__":
         os.system(f"docker run -d -p 8000:8000 --name now_con python:{now} gunicorn --bind 0:8000 base.wsgi")
         if init == False:
             os.system(f"docker rmi -f {now_con.image_name}")
-        #messagr success
+        #messagr success#
