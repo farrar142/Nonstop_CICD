@@ -77,6 +77,7 @@ def get_now():
     return nowtime
 def connection_checker(test_con):
     osType = get_sys()
+    print(osType)
     if osType == "Lin":
         myip = test_con.ip
     else:
