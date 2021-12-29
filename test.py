@@ -126,6 +126,12 @@ def main():
         now_con = Container(get_specific_container("now_con"))
     except:
         init = True
+    try:
+        shut_con = Container(get_specific_container("test_con"))
+        os.system(f"docker rm -f test_con")
+        os.system(f"docker rmi -f {shut_con.image_name}")
+    except:
+        pass
     os.system("docker pull python:3")
     os.system(f"docker build -t python:{cur_time} .")
     os.system(f"docker run -d -p 8001:8001 --name test_con python:{cur_time} gunicorn --bind 0:8001 {path}.wsgi")
