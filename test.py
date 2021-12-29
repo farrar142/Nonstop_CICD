@@ -124,3 +124,4 @@ if __name__ == "__main__":
             os.system(f"docker rmi -f {now_con.image_name}")
         #messagr success##
         sys.stderr.write("Build Succeed")
+        raise ValueError
