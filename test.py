@@ -4,17 +4,20 @@ import subprocess
 import time
 import socket
 from datetime import datetime
-osType = ""
+def get_sys():
+    os_encoding = locale.getpreferredencoding()
+    if os_encoding.upper() == 'cp949'.upper():
+        return "Win"
+    elif os_encoding.upper() == 'UTF-8'.upper():
+        return "Linux"
 def get_logs(cmd):
     global osType
     os_encoding = locale.getpreferredencoding()
     #print("System Encdoing :: ", os_encoding)
     if os_encoding.upper() == 'cp949'.upper():  # Windows
-        osType = "Win"
         return subprocess.Popen(
             cmd, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip()
     elif os_encoding.upper() == 'UTF-8'.upper():  # Mac&Linux
-        osType = "Lin"
         return os.popen(cmd).read()
     else:
         print("None matched")
@@ -73,9 +76,10 @@ def get_now():
         nowtime = nowtime + str(i).zfill(2)
     return nowtime
 def connection_checker(test_con):
+    osType = get_sys()
     if osType == "Lin":
         myip = test_con.ip
-    elif osType == "Win":
+    else:
         myip = socket.gethostbyname(socket.gethostname())
     print(myip)
     print(test_con.port)
@@ -104,12 +108,11 @@ def get_setting_path():
             if i == 'settings.py':
                 setting_path = path
                 break
+    osType = get_sys()
     if osType == "Win":
         return setting_path.split("\\")[-1]
-    elif osType == "Lin":
-        return setting_path.split("/")[-1]
     else:
-        raise Exception("Not supported OS")
+        return setting_path.split("/")[-1]
 
 class Container:
     def __init__(self,con):
