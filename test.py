@@ -4,13 +4,17 @@ import subprocess
 import time
 import socket
 from datetime import datetime
+osType = ""
 def get_logs(cmd):
+    global osType
     os_encoding = locale.getpreferredencoding()
     #print("System Encdoing :: ", os_encoding)
     if os_encoding.upper() == 'cp949'.upper():  # Windows
+        osType = "Win"
         return subprocess.Popen(
             cmd, stdout=subprocess.PIPE).stdout.read().decode('utf-8').strip()
     elif os_encoding.upper() == 'UTF-8'.upper():  # Mac&Linux
+        osType = "Lin"
         return os.popen(cmd).read()
     else:
         print("None matched")
@@ -69,55 +73,75 @@ def get_now():
         nowtime = nowtime + str(i).zfill(2)
     return nowtime
 def connection_checker(test_con):
-    sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    sock.settimeout(0.5)
-    myip = socket.gethostbyname(socket.gethostname())
-    print(test_con.ip)
+    if osType == "Lin":
+        myip = test_con.ip
+    elif osType == "Win":
+        myip = socket.gethostbyname(socket.gethostname())
+    print(myip)
     print(test_con.port)
-    server_address = (test_con.ip,int(test_con.port))
-    # server_address = (myip,8002)
+    server_address = (myip,int(test_con.port))
+    fail_counter = 0
     for i in range(10):
         time.sleep(1)
         try:
+            sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            sock.settimeout(0.5)
             sock.connect(server_address)            
             sock.close()
-            print("Connection Succeed")
-            return True
+            print(f"{i+1} Connection Succeed")
         except:
-            print(f"{i+1} failed")
+            print(f"{i+1} Connection Failed")
+            fail_counter += 1
     sock.close()
-    return False
+    if fail_counter:
+        return False
+    else:
+        return True
+def get_setting_path():
+    setting_path = ""
+    for path, dirs, files in os.walk(os.getcwd()):
+        for i in files:
+            if i == 'settings.py':
+                setting_path = path
+                break
+    return setting_path.split("\\")[-1]
+
 class Container:
     def __init__(self,con):
         self.container_name = con[0]
         self.image_name = con[2]
         self.ip = con[-1]
         self.port = con[-2]
-#
-if __name__ == "__main__":
-    now = get_now()
+
+def main():
+    cur_time = get_now()
+    path = get_setting_path()
     init = False
     try:
         now_con = Container(get_specific_container("now_con"))
     except:
-        print("No Current Container.")
         init = True
     os.system("docker pull python:3")
-    os.system(f"docker build -t python:{now} .")
-    os.system(f"docker run -d -p 8001:8001 --name test_con python:{now} gunicorn --bind 0:8001 base.wsgi")
+    os.system(f"docker build -t python:{cur_time} .")
+    os.system(f"docker run -d -p 8001:8001 --name test_con python:{cur_time} gunicorn --bind 0:8001 {path}.wsgi")
     con_info = get_specific_container("test_con")
     print(con_info)
     test_con = Container(con_info)
     if connection_checker(test_con) == False:
         os.system(f"docker rm -f test_con")
-        os.system(f"docker rmi -f python:{now}")
+        os.system(f"docker rmi -f python:{cur_time}")
         raise Exception("Connection Error")
     else:
         os.system(f"docker rm -f test_con")
         if init == False:
             os.system(f"docker rm -f now_con")
-        os.system(f"docker run -d -p 8000:8000 --name now_con python:{now} gunicorn --bind 0:8000 base.wsgi")
+        os.system(f"docker run -d -p 8000:8000 --name now_con python:{cur_time} gunicorn --bind 0:8000 {path}.wsgi")
         if init == False:
             os.system(f"docker rmi -f {now_con.image_name}")
         #messagr success##
-        print("build Succeed")
+        os.system("python3 manage.py test")
+        print(" ")
+        print("Build Succeed")
+
+if __name__ == "__main__":
+    main()
