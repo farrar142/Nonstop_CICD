@@ -73,7 +73,7 @@ def connection_checker(test_con):
     sock.settimeout(0.5)
     myip = socket.gethostbyname(socket.gethostname())
     print(test_con.port)
-    server_address = (myip,int(test_con.port))
+    server_address = (test_con.ip,int(test_con.port))
     # server_address = (myip,8002)
     for i in range(10):
         time.sleep(1)
