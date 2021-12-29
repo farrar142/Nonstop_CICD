@@ -1,8 +1,9 @@
-import os
+import os,sys
 import locale
 import subprocess
 import time
 import socket
+from datetime import datetime
 def get_logs(cmd):
     os_encoding = locale.getpreferredencoding()
     #print("System Encdoing :: ", os_encoding)
@@ -54,28 +55,78 @@ def get_docker_containers():
     else:
         print("No Containers")
     return result
-def get_specfic_container(cmd):
+def get_specific_container(cmd):
     a = get_docker_containers()
     for i in a:
         if i[0] == cmd:
             return i
     return []
-def connection_checker(sock,server_address):
-    sock.connect(server_address)
-    recvdata = sock.recv(10000)
-    print(recvdata)
-    # for i in range(10):
-    #     time.sleep(1)
-    #     if recvdata:
-    #         sock.close()
-    #         return print("success")
-    #     sock.close()
-if __name__ == "__main__":
-    prev_con = get_specfic_container("web")
-    # os.system("docker pull python:3")
-    # os.system("docker build -t python:test .")
-    # os.system("docker run -d -p 8001:8000 python:test gunicorn --bind 0:8001 base.wsgi")
+def get_now():
+    now=datetime.now()
+    nows = [now.year,now.month,now.day,now.hour,now.minute,now.second]
+    nowtime = ""
+    for i in nows:
+        nowtime = nowtime + str(i).zfill(2)
+    return nowtime
+def connection_checker(test_con):
     sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    print(f"{prev_con[-1]}, {prev_con[-2]}")
-    server_address = ("localhost",int(prev_con[-2]))
-    connection_checker(sock,server_address)
+    sock.settimeout(0.5)
+    myip = socket.gethostbyname(socket.gethostname())
+    print(test_con.port)
+    server_address = (myip,int(test_con.port))
+    # server_address = (myip,8002)
+    for i in range(10):
+        time.sleep(1)
+        try:
+            sock.connect(server_address)            
+            sock.close()
+            print("Connection Succeed")
+            return True
+        except:
+            print(f"{i+1} failed")
+    sock.close()
+    print("Connection Failed")
+    return False
+class Container:
+    def __init__(self,con):
+        self.container_name = con[0]
+        self.image_name = con[2]
+        self.ip = con[-1]
+        self.port = con[-2]
+
+if __name__ == "__main__":
+    now = get_now()
+    init = False
+    try:
+        now_con = Container(get_specific_container("now_con"))
+    except:
+        print("현재 컨테이너가 존재하지 않아요.")
+        init = True
+    # 이미지가 없을시 풀
+    os.system("docker pull python:3")
+    # 새 이미지 생성
+    os.system(f"docker build -t python:{now} .")
+    #테스트 컨테이너 8001번 생성
+    os.system(f"docker run -d -p 8001:8001 --name test_con python:{now} gunicorn --bind 0:8001 base.wsgi")
+    test_con = Container(get_specific_container("test_con"))
+    #테스트
+    if connection_checker(test_con) == False:
+        #새 컨테이너 끄기
+        os.system(f"docker rm -f test_con")
+        #새 이미지 삭제
+        os.system(f"docker rmi -f python:{now}")
+        sys.stderr.write("Build Failed")
+        exit()
+    else:
+        #elif test success
+        #새 컨테이너 끄기
+        os.system(f"docker rm -f test_con")
+        #기존 컨테이너 끄기
+        if init == False:
+            os.system(f"docker rm -f now_con")
+        #새 이미지를 기존 컨테이너 이름으로 실행 8000포트로
+        os.system(f"docker run -d -p 8000:8000 --name now_con python:{now} gunicorn --bind 0:8000 base.wsgi")
+        #오래된 이미지 삭제
+        if init == False:
+            os.system(f"docker rmi -f {now_con.image_name}")
+        #성공 메세지.
