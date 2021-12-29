@@ -98,17 +98,18 @@ class Container:
 if __name__ == "__main__":
     now = get_now()
     init = False
-    con_info = get_specific_container("now_con")
-    print(con_info)
+    con_info = 
     try:
-        now_con = Container(con_info)
+        now_con = Container(get_specific_container("now_con"))
     except:
         print("No Current Container.")
         init = True
     os.system("docker pull python:3")
     os.system(f"docker build -t python:{now} .")
     os.system(f"docker run -d -p 8001:8001 --name test_con python:{now} gunicorn --bind 0:8001 base.wsgi")
-    test_con = Container(get_specific_container("test_con"))
+    con_info = get_specific_container("test_con")
+    print(con_info)
+    test_con = Container(con_info)
     if connection_checker(test_con) == False:
         os.system(f"docker rm -f test_con")
         os.system(f"docker rmi -f python:{now}")
