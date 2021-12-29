@@ -9,7 +9,7 @@ def get_sys():
     if os_encoding.upper() == 'cp949'.upper():
         return "Win"
     elif os_encoding.upper() == 'UTF-8'.upper():
-        return "Linux"
+        return "Lin"
 def get_logs(cmd):
     global osType
     os_encoding = locale.getpreferredencoding()
