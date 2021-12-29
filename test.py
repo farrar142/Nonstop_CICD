@@ -86,7 +86,6 @@ def connection_checker(test_con):
         except:
             print(f"{i+1} failed")
     sock.close()
-    print("Connection Failed")
     return False
 class Container:
     def __init__(self,con):
@@ -112,9 +111,7 @@ if __name__ == "__main__":
     if connection_checker(test_con) == False:
         os.system(f"docker rm -f test_con")
         os.system(f"docker rmi -f python:{now}")
-        print("failed")
-        sys.stderr.write("Build Failed")
-        exit()
+        raise Exception("Connection Error")
     else:
         os.system(f"docker rm -f test_con")
         if init == False:
@@ -123,5 +120,4 @@ if __name__ == "__main__":
         if init == False:
             os.system(f"docker rmi -f {now_con.image_name}")
         #messagr success##
-        sys.stderr.write("Build Succeed")
-        raise ValueError
+        print("build Succeed")
