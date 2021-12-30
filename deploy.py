@@ -170,7 +170,7 @@ def main():
     try:
         test_con = Container(con_info)
     except:
-        raise Exception("ImageBuildFailed")
+        raise Exception("ImageBuildFailed Please Check tests.py files or Requirements Setting")
     if connection_checker(test_con) == False:
         os.system(f"docker rm -f test_con")
         os.system(f"docker rmi -f python:{cur_time}")
