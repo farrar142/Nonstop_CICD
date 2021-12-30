@@ -165,7 +165,10 @@ def main():
     os.system(f"docker build -t python:{cur_time} .")
     os.system(f"docker run -d -p 8001:8001 --name test_con python:{cur_time} gunicorn --bind 0:8001 {path}.wsgi")
     print("4.get_Test_Con_Info")
-    con_info = get_specific_container("test_con")
+    try:
+        con_info = get_specific_container("test_con")
+    except:
+        raise Exception("ImageBuildFailed")
     print(con_info)
     test_con = Container(con_info)
     if connection_checker(test_con) == False:
