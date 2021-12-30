@@ -1,6 +1,9 @@
 import os
 
 if __name__ == "__main__":    
+    f = open("newfile.txt",'w')
+    f.write(f"test1")
+    f.close()
     os.system(f"git add . && git commit -m \"test\" && git push origin master")
 else:
     for i in range(20):
