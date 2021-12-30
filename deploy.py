@@ -128,7 +128,7 @@ def get_setting_path():
     setting_path = ""
     for path, dirs, files in os.walk(os.getcwd()):
         for i in files:
-            if i == 'settings.py':
+            if i == 'wsgi.py':
                 setting_path = path
                 break
     osType = get_sys()
