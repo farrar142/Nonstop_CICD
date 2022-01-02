@@ -5,7 +5,8 @@ if __name__ == "__main__":
     f.write(f"test{get_now()}")
     f.close()
     os.system(f"git config --unset--global user.name")
-    os.system(f"git config --unset--global user.name")
+    os.system(f"git config --unset--global user.email")
+    os.system(f"git config --global user.name farrar142")
     os.system(f"git config --global user.email gksdjf1690@gmail.com")
     os.system(f"git add . && git commit -m \"test\" && git push origin master")
 else:
