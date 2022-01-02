@@ -5,7 +5,7 @@ if __name__ == "__main__":
     f.write(f"test{get_now()}")
     f.close()
     os.system(f"git config user.name farrar142")
-    os.system(f"git config user.email gksdjf1690")
+    os.system(f"git config user.email gksdjf1690@gmail.com")
     os.system(f"git add . && git commit -m \"test\" && git push origin master")
 else:
     for i in range(20):
