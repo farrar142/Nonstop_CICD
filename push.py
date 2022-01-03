@@ -11,6 +11,7 @@ if __name__ == "__main__":
     os.system(f"git config user.name farrar142")
     os.system(f"git config user.email gksdjf1690@gmail.com")
     os.system(f"git add . && git commit -m \"test\" && git push origin master")
+    os.remove("./newfile.txt")
 else:
     for i in range(20):
         print(i)
